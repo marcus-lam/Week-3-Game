@@ -9,8 +9,8 @@ var hangman = {
     dashAry: [],
     dashVal: 0,
     winCounter: 0,
-    answerAry: ["OLIVER-HELDENS", "SHAUN-FRANK", "MALAA", "DEADMAU5", "FEINT"],
-    hintAry: ["Future House Pioneer...", "Canadian House Mastermind...", "Hip-Hop House Heavyweight...", "EDM Poster Boy...", "Not House, but personal DnB favorite..."],
+    answerAry: ["OLIVER-HELDENS", "SHAUN-FRANK", "MALAA", "DEADMAU5", "BOUT"],
+    hintAry: ["Future House Pioneer...", "Canadian House Mastermind...", "Hip-Hop House Heavyweight...", "EDM Poster Boy...", "Spinnin' Records Rising Talent..."],
     genAnswerHint: function() {
         var randomizer = Math.floor(Math.random() * 5);
         this.answer = this.answerAry[randomizer];
@@ -43,11 +43,13 @@ var hangman = {
         document.querySelector("#gamebox").innerHTML = html;
     },
     reset: function() {
+        userGuess = "";
         this.dashVal = 0;
         this.guesses = 10;
         this.guessesSoFar = "";
         this.winCounter = 0;
         this.dashDiv = "";
+        this.dashAry = [];
         this.genAnswerHint();
         this.genDashAry();
         this.genDashDiv();
@@ -66,6 +68,39 @@ hangman.update();
 var post = hangman.dashDiv;
 document.querySelector("#dashAnswers").innerHTML = post;
 
+var addiction = new Audio("assets/sounds/addiction.mp3");
+var gecko = new Audio("assets/sounds/gecko.mp3");
+var loveMeMad = new Audio("assets/sounds/loveMeMad.mp3");
+var oceanDrive = new Audio("assets/sounds/oceanDrive.mp3");
+var stay = new Audio("assets/sounds/stay.mp3");
+
+var imgNsound = function() {
+    addiction.pause();
+    gecko.pause();
+    loveMeMad.pause();
+    oceanDrive.pause();
+    stay.pause();
+    var i = document.getElementById("houseDJ");
+        if (hangman.winCounter === 4) {
+            i.innerHTML = "<img class='img-thumbnail' src='assets/images/bout.jpg' alt='Bout' width='320' height='320'>"
+            loveMeMad.play();
+        } else if (hangman.winCounter === 5) {
+            i.innerHTML = "<img class='img-thumbnail' src='assets/images/malaa.jpg' alt='Malaa' width='320' height='320'>"
+            addiction.play();
+        } else if (hangman.winCounter === 8) {
+            i.innerHTML = "<img class='img-thumbnail' src='assets/images/deadmau5.jpeg' alt='Deadmau5' width='320' height='320'>"
+            stay.play();
+        } else if (hangman.winCounter === 10) {
+            i.innerHTML = "<img class='img-thumbnail' src='assets/images/frank.jpg' alt='Shaun Frank' width='320' height='320'>"
+            oceanDrive.play();
+        } else if (hangman.winCounter === 13) {
+            i.innerHTML = "<img class='img-thumbnail' src='assets/images/heldens.jpg' alt='Oliver Heldens' width='320' height='320'>"
+            gecko.play();
+        } else {
+            i.innerHTML = "<img class='img-thumbnail' src='assets/images/default.jpeg' alt='Default Img' width='320' height='320'>"
+        }
+};
+
 var userGuess;
 
 document.onkeyup = function(event) {
@@ -83,10 +118,12 @@ document.onkeyup = function(event) {
                 if ((hangman.dashVal === 1) && (hangman.winCounter === (hangman.dashAry.length - 1))) {
                     hangman.wins++;
                     alert("You got it! The answer was " + hangman.dashAry.join('') + ". You currently have " + hangman.wins + " wins. On to the next one!");
+                    imgNsound();
                     hangman.reset();
                 } else if ((hangman.dashVal === 0) && (hangman.winCounter === hangman.dashAry.length)) {
                     hangman.wins++;
                     alert("You got it! The answer was " + hangman.dashAry.join('') + ". You currently have " + hangman.wins + " wins. On to the next one!");
+                    imgNsound();
                     hangman.reset();
                 }
             }
@@ -102,6 +139,7 @@ document.onkeyup = function(event) {
         if (hangman.guesses === 0) {
             hangman.losses++;
             alert("You've lost... one more time?");
+            imgNsound();
             hangman.reset();
         }
     }
